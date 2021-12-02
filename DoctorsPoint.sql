@@ -1,0 +1,1 @@
+SELECT * FROM doctors_point.doctors;
