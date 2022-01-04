@@ -83,9 +83,39 @@ class SqlFactory:
                f"WHERE first_name='{first_name}' AND last_name='{last_name}' AND specialty.name='{specialty}'"
 
     @staticmethod
-    def select_user(email):
-        return f"SELECT id FROM users WHERE email='{email}'"
-
-    @staticmethod
     def get_date():
         return "SELECT CURDATE()"
+
+    @staticmethod
+    def insert_user(first_name, last_name, email, password):
+        return f"INSERT INTO users (first_name, last_name, email, password, last_login)" \
+               f"VALUES ('{first_name}', '{last_name}', '{email}', '{password}', NOW())"
+
+    @staticmethod
+    def select_user(email, password):
+        return f"SELECT id, first_name, last_name " \
+               f"FROM users " \
+               f"WHERE email='{email}' AND password='{password}'"
+
+    @staticmethod
+    def update_user(user_id):
+        return f"UPDATE users " \
+               f"SET last_login=NOW() " \
+               f"WHERE id={user_id}"
+
+    @staticmethod
+    def delete_user(user_id):
+        return f"DELETE FROM users " \
+               f"WHERE id={user_id}"
+
+    @staticmethod
+    def specialties():
+        return f"SELECT name FROM specialty"
+
+    @staticmethod
+    def states():
+        return f"SELECT name FROM states"
+
+    @staticmethod
+    def city():
+        return f"SELECT DISTINCT name FROM city"
