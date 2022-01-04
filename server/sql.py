@@ -47,7 +47,7 @@ class SqlFactory:
         doctor_id_query = self.select_doctor(doctor_first_name, doctor_last_name, specialty)
         date_query = self.get_date()
         columns = 'doctor_id, rating, publish_date'
-        values = f"'{doctor_id_query}', {rating}, '{date_query}'"
+        values = f"({doctor_id_query}), {rating}, ({date_query})"
         if user_email:
             user_id_query = self.select_user(user_email)
             columns += ', writer_id'
