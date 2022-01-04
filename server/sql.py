@@ -1,4 +1,3 @@
-
 class SqlFactory:
     @staticmethod
     def insert_state(symbol, name):
@@ -44,6 +43,21 @@ class SqlFactory:
         return f"INSERT IGNORE INTO doctors_clinics (doctor_id, clinic_id) " \
                f"VALUES (({doctor_id_query}), ({clinic_id_query}))"
 
+    def insert_comment(self, doctor_first_name, doctor_last_name, specialty, user_email, rating, text):
+        doctor_id_query = self.select_doctor(doctor_first_name, doctor_last_name, specialty)
+        date_query = self.get_date()
+        columns = 'doctor_id, rating, publish_date'
+        values = f"'{doctor_id_query}', {rating}, '{date_query}'"
+        if user_email:
+            user_id_query = self.select_user(user_email)
+            columns += ', writer_id'
+            values += f", '{user_id_query}'"
+        if text:
+            columns += ', text'
+            values += f", '{text}'"
+        return f"INSERT INTO comments ({columns}) " \
+               f"VALUES ({values})"
+
     @staticmethod
     def select_city(city, state_symbol):
         return f"SELECT id " \
@@ -67,3 +81,11 @@ class SqlFactory:
         return f"SELECT doctors.id " \
                f"FROM doctors LEFT JOIN specialty on specialty.id = doctors.specialty_id " \
                f"WHERE first_name='{first_name}' AND last_name='{last_name}' AND specialty.name='{specialty}'"
+
+    @staticmethod
+    def select_user(email):
+        return f"SELECT id FROM users WHERE email='{email}'"
+
+    @staticmethod
+    def get_date():
+        return "SELECT CURDATE()"
