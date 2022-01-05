@@ -109,6 +109,20 @@ class SqlFactory:
                f"WHERE id={user_id}"
 
     @staticmethod
+    def doctors(first_name, last_name, specialty, address, city, state, order_by, limit = 20):
+        return f"SELECT clinics.address,clinics.phone_number, city.name, states.name," \
+               f"       doctors.first_name, doctors.middle_name, doctors.last_name, doctors.gender," \
+               f"       doctors.graduation_year, specialty.name " \
+               f"FROM doctors_clinics " \
+               f"    LEFT OUTER JOIN clinics on doctors_clinics.clinic_id = clinics.id " \
+               f"    LEFT OUTER JOIN city on clinics.city_id = city.id " \
+               f"    LEFT OUTER JOIN states on city.state_symbol = states.symbol " \
+               f"    LEFT OUTER JOIN doctors on doctors_clinics.doctor_id = doctors.id " \
+               f"    LEFT OUTER JOIN specialty on specialty.id = doctors.specialty_id " \
+               f"ORDER BY first_name " \
+               f"LIMIT 20"
+
+    @staticmethod
     def specialties():
         return f"SELECT name FROM specialty"
 

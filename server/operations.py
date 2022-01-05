@@ -6,6 +6,9 @@ class Operations:
     __con = Connection()
     __sql = SqlFactory()
 
+    def filter_doctors(self):
+        return self.__con.query_multi(self.__sql.doctors(None, None, None, None, None, None, None))
+
     def sign_up(self, first_name, last_name, email, password):
         return self.__con.exec(self.__sql.insert_user(first_name, last_name, email, password))
 

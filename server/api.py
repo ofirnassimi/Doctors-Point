@@ -48,6 +48,11 @@ def states():
 	return response(op.get_states())
 
 
+@app.route('/search/', methods=['GET'])
+def doctors():
+	return response(op.filter_doctors())
+
+
 if __name__ == '__main__':
 	# TODO remove debug lines on submit, leave only "app.run()"
 	app.debug = True
