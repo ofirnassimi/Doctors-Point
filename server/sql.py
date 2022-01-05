@@ -108,8 +108,39 @@ class SqlFactory:
         return f"DELETE FROM users " \
                f"WHERE id={user_id}"
 
+    def doctors(self, first_name, last_name, specialty, address, city, state_symbol, order_by, limit = 20):
+        columns = 'doctors.first_name, doctors.middle_name, doctors.last_name, doctors.gender, ' \
+                  'doctors.graduation_year, specialty.name, clinics.address, city.name, states.name, ' \
+                  'clinics.phone_number'
+        tables = 'doctors, specialty, clinics, city, states,  doctors_clinics'
+        conditins = f"doctors.specialty_id = specialty.id AND doctors.id = doctors_clinics.doctor_id " \
+                    f"AND doctors_clinics.clinic_id = clinics.id AND clinics.city_id = city.id " \
+                    f"AND city.state_symbol = states.symbol"
+        if first_name:
+            conditins += f" AND doctors.first_name = '{first_name}'"
+        if last_name:
+            conditins += f" AND doctors.last_name = '{last_name}'"
+        if specialty:
+            specialty_id_query = self.select_specialty(specialty)
+            conditins += f" AND specialty.id = ({specialty_id_query})"
+        if address:
+            conditins += f" AND clinics.address = '{address}'"
+        if city:
+            city_id_query = self.select_city(city)
+            conditins += f" AND city.id = ({city_id_query})"
+        if state_symbol:
+            conditins += f" AND state.symbol = '{state_symbol}'"
+        query = f"SELECT {columns} " \
+                f"FROM {tables} " \
+                f"WHERE ({conditins}) "
+        if order_by:
+            query += f" ORDER BY {order_by}"
+        if limit:
+            query += f"LIMIT {limit}"
+        return query
+
     @staticmethod
-    def doctors(first_name, last_name, specialty, address, city, state, order_by, limit = 20):
+    def get_all_doctors():
         return f"SELECT clinics.address,clinics.phone_number, city.name, states.name," \
                f"       doctors.first_name, doctors.middle_name, doctors.last_name, doctors.gender," \
                f"       doctors.graduation_year, specialty.name " \
