@@ -84,8 +84,8 @@ class Login extends React.Component {
     return (
       <div>
         <button onClick={()=>this.signIn(this.state.username,
-            this.state.password)}>login</button>
-        <button onClick={this.toGuestMode}>back</button>
+            this.state.password)}>Login</button>
+        <button onClick={this.toGuestMode}>Back</button>
         <br/>
         <input
           type="text"
@@ -108,8 +108,10 @@ class Login extends React.Component {
   deleteUserMode = () => {
     return (
       <div>
-        <button onClick={()=>this.signIn(this.state.username,
-            this.state.password, true)}>Delete user</button>
+        <button onClick={()=>this.deleteUser(this.state.username,
+            this.state.password)}>Delete User</button>
+                  <button onClick={this.toGuestMode}>Back</button>
+
         <br/>
         <input
           type="text"
@@ -134,8 +136,8 @@ class Login extends React.Component {
     return (
       <div>
         <button onClick={()=>this.signUp(this.state.first_name,
-            this.state.last_name, this.state.username, this.state.password)}>sign up</button>
-        <button onClick={this.toGuestMode}>back</button>
+            this.state.last_name, this.state.username, this.state.password)}>Sign Up</button>
+        <button onClick={this.toGuestMode}>Back</button>
         <br/>
         <input
           type="text"
