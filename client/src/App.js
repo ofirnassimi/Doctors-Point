@@ -1,68 +1,90 @@
 import React from 'react';
 import './App.css';
 import Axios from 'axios';
+import Login from './Login'
 
 function App() {
   return (
     <div className="App">
       <h1>Doctors and Clinics App</h1>
-      {/*<Login/>*/}
-      <Board/>
+      <Display/>
     </div>
   );
 }
 
 export default App;
 
-// class Login extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       user: {id: 0, first_name: 'dear', last_name: 'guest'}
-//     };
-//     // this.operations = sign
-//   }
-//
-//   signUp() {
-//
-//   }
-//
-//   render() {
-//     const name = this.state.user.first_name + " " + this.state.user.last_name;
-//     var buttons;
-//     if (this.state.user.id === 0) {
-//       buttons = (<button onClick={this.signUp}>sign up</button>)
-//     } else {
-//       buttons = (
-//         <div>
-//           <button>sign out</button>
-//           <button>delete user</button>
-//         </div>
-//       )
-//     }
-//     return (
-//       <div>
-//         hi {name}
-//         <br/>
-//         {buttons}
-//       </div>
-//     )
-//   }
-// }
-//
-// class SignUp extends React.Component {
-//
-// }
+class Display extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      display: <Search/>
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <div>
+          <button onClick={() => {this.setState({display: <Search/>})}}>search</button>
+          <button onClick={() => {this.setState({display: <Login/>})}}>login</button>
+          <button onClick={() => {this.setState({display: <Board/>})}}>board</button>
+        </div>
+        <br/>
+        {this.state.display}
+      </div>
+    )
+  }
+}
+
+class Span extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      spanned: false
+    }
+    this.switchSpan = this.switchSpan.bind(this)
+  }
+
+  base = () => {
+    return (
+      <p>base</p>
+    )
+  }
+
+  add = () => {
+    return (
+      <p>add</p>
+    )
+  }
+
+  switchSpan = () => {
+    this.setState({spanned: !this.state.spanned})
+  }
+
+  render() {
+    return (
+      <div>
+        {this.base()}
+        <button onClick={this.switchSpan}>{this.state.spanned ? '-' : '+'}</button>
+        {this.state.spanned ? this.add() : <div/>}
+      </div>
+    )
+  }
+}
 
 class Board extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {data: []};
-    this.get_doctors = this.get_doctors.bind(this)
+    this.state = {
+      filters: {},
+      data: []
+    };
+    this.getDoctors = this.getDoctors.bind(this)
   }
 
-  get_doctors() {
-    Axios.get('http://localhost:5000/search/').then(
+  getDoctors = (filters) => {
+    Axios.get('http://localhost:5000/search/', {params: filters}).then(
       (response) => {
         const data = response.data;
         console.log(data);
@@ -74,7 +96,8 @@ class Board extends React.Component {
   render() {
     return (
       <div>
-        <button onClick={this.get_doctors}>search</button>
+        <Search getDoctors={this.getDoctors}/>
+        {/*<Search getDoctors={'this.getDoctors'}/>*/}
         <table>
           {this.state.data.map((doctor) => <tr>{doctor.map((item) => <td>{item}</td>)}</tr>)}
         </table>
@@ -83,63 +106,130 @@ class Board extends React.Component {
   }
 }
 
+class Search extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      state: null,
+      city: null,
+      specialty: null,
+      result: null,
+      states: []
+    }
 
-// function Line(props) {
-//   return (
-//     <button className="square" onClick={() => props.onClick()}>
-//       {props.data}
-//     </button>
-//   );
-// }
+    this.handleChange = this.handleChange.bind(this)
+    this.invokeSearch = this.invokeSearch.bind(props)
+    this.getStates = this.getStates.bind(this);
+    this.getStates();
 
+    console.log(props)
+  }
 
-// class Doctors extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       // squares: Array(20).fill(null),
-//       lines: Axios.get('http://localhost:5000/doctors/'),
-//     };
-//   }
-//
-//   // handleClick(i) {
-//   //   const lines = this.state.lines.slice();
-//   //   lines[i] = i;
-//   //   this.setState({
-//   //     lines: lines,
-//   //     xIsNext: !this.state.xIsNext,
-//   //   });
-//   // }
-//
-//   renderLine(i) {
-//     return (<Line
-//       value={this.state.lines[i]}
-//       // onClick={() => this.handleClick(i)}
-//     />);
-//   }
-//
-//   render() {
-//     const status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-//
-//     return (
-//       <div>
-//         <div className="status">{status}</div>
-//         <div className="board-row">
-//           {this.renderSquare(0)}
-//           {this.renderSquare(1)}
-//           {this.renderSquare(2)}
-//         </div>
-//         <div className="board-row">
-//           {this.renderSquare(3)}
-//           {this.renderSquare(4)}
-//           {this.renderSquare(5)}
-//         </div>
-//         <div className="board-row">
-//           {this.renderSquare(6)}
-//           {this.renderSquare(7)}
-//           {this.renderSquare(8)}
-//         </div>
-//       </div>
-//     );
-//   }
-// }
+  getStates() {
+    console.log('getStates call')
+    Axios.get('http://localhost:5000/states/').then(
+      (res) => {
+        this.setState({states: res.data})
+      }
+    )
+  }
+
+  handleChange({ target }) {
+    this.setState({
+      [target.name]: target.value
+    });
+    console.log(this.state);
+  }
+
+  invokeSearch = () => {
+    this.props.getDoctors(this.state)
+  }
+
+  render() {
+    return (
+      <div>
+        <label>state: </label>
+        <StateSelect
+          onChange={
+            (val) => {this.setState({state: val})}
+          }
+        />
+        <label>city: </label>
+        <input
+          type="text"
+          name="city"
+          placeholder="Enter city ..."
+          value={ this.state.city }
+          onChange={ this.handleChange }
+        />
+        <label>specialty: </label>
+        <input
+          type="text"
+          name="specialty"
+          placeholder="Enter specialty ..."
+          value={ this.state.specialty }
+          onChange={ this.handleChange }
+        />
+        <button onClick={this.invokeSearch}>search</button>
+        {this.state.result}
+      </div>
+    )
+  }
+}
+
+class StateSelect extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      options: [],
+    };
+    this.getOptions = this.getOptions.bind(this);
+    this.getOptions();
+  }
+
+  getOptions() {
+    Axios.get('http://localhost:5000/states/').then(
+      (res) => {
+        this.setState({options: res.data})
+      }
+    )
+  }
+
+  render() {
+    return (
+      <select>
+        {this.state.options.map((option) => <option>{option}</option>)}
+      </select>
+    )
+  }
+}
+
+class Switch extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      display: <StateSelect/>,
+    }
+    this.searchMode = this.searchMode.bind(this)
+    this.selectMode = this.selectMode.bind(this)
+  }
+
+  searchMode() {
+    this.setState({display: <Search/>})
+  }
+
+  selectMode() {
+    this.setState({display: <StateSelect/>})
+  }
+
+  render() {
+    return (
+      <div>
+        <button onClick={this.searchMode}>search</button>
+        <button onClick={this.selectMode}>select</button>
+        <br/>
+        {this.state.display}
+      </div>
+    )
+  }
+}
