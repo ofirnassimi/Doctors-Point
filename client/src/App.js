@@ -87,8 +87,8 @@ class Board extends React.Component {
         <Search getDoctors={this.getDoctors} getTop10={this.getTop10}/>
         <br/>
         <table>
-          {this.state.columns.map((column) => <th>{column}</th>)}
-          {this.state.data.map((doctor) => <tr>{doctor.map((item) => <td>{item}</td>)}</tr>)}
+          {/*{this.state.columns.map((column) => <th>{column}</th>)}*/}
+          {/*{this.state.data.map((doctor) => <tr>{doctor.map((item) => <td>{item}</td>)}</tr>)}*/}
         </table>
       </div>
     )
@@ -103,7 +103,8 @@ class Search extends React.Component {
       city: null,
       specialty: null,
       result: null,
-      states: []
+      states: [],
+        id: 0,
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -131,6 +132,7 @@ class Search extends React.Component {
       state: this.state.state,
       city: this.state.city,
       specialty: this.state.specialty,
+        id: this.state.id,
     }
     console.log(filters)
     this.props.getDoctors(filters)
@@ -153,7 +155,11 @@ class Search extends React.Component {
         <Select
           setSelect={(val) => {this.setState({specialty: val})}}
           suffix='specialty/'
-        />
+        />        <label>Doctor's ID: </label>
+
+          <input
+          type="number"
+          onChange={(event) => {this.setState({id:event.target.value})}}/><br/>
         <button onClick={() => {this.invokeSearch()}}>search</button>
         <button onClick={() => {this.props.getTop10()}}>TOP 10</button><br/>
         {this.state.result}
