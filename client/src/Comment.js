@@ -53,11 +53,11 @@ export default class Comment extends React.Component {
                 onChange={ this.handleChange }
               />
                 <select onChange={(event)=>{this.setState({rate: event.target.value})}}>
-                    <option>1 (Poor)</option>
+                    <option>1</option>
                     <option>2</option>
                     <option>3</option>
                     <option>4</option>
-                    <option>5 (Excellent)</option>
+                    <option>5</option>
                 </select>
                 <button onClick={()=>this.addComment(
                     this.state.docId,

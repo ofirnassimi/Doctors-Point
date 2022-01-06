@@ -3,7 +3,7 @@ import Axios from "axios";
 import App from "./App";
 
 class Login extends React.Component {
-  guest = {id: 0, first_name: 'dear', last_name: 'guest'};
+  // guest = {id: 0, first_name: 'dear', last_name: 'guest'};
 
   constructor(props) {
     super(props);
@@ -20,23 +20,29 @@ class Login extends React.Component {
     this.toGuestMode = this.toGuestMode.bind(this)
     this.toLoginMode = this.toLoginMode.bind(this)
     this.toSignupMode = this.toSignupMode.bind(this)
+          this.todeleteUserMode = this.todeleteUserMode.bind(this)
+
     this.loginMode = this.loginMode.bind(this)
     this.guestMode = this.guestMode.bind(this)
     this.signupMode = this.signupMode.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
 
-  signIn(username, password) {
+  signIn(username, password, delUser=false) {
     Axios.get('http://localhost:5000/login/', {params: {user_name: username, password: password}}).then(
       (res) => {
         console.log(res.data)
-        // if (res.data.length > 0) this.props.setUser(res.data)
+        // if (res.data.length > 0) this.props.setUser(res.data) TODO: verify known user
+          if(delUser){
+              Axios.delete('http://localhost:5000/login/', {params: {user_name: username}})
+          }
       }
     )
   }
 
   signUp(first_name, last_name, username, password) {
-
+    Axios.post('http://localhost:5000/login/', {user_name: username, password: password,
+            first_name: first_name, last_name: last_name})
   }
 
   signOut() {
@@ -46,6 +52,8 @@ class Login extends React.Component {
   toGuestMode = () => {this.setState({mode: this.guestMode})}
   toLoginMode = () => {this.setState({mode: this.loginMode})}
   toSignupMode = () => {this.setState({mode: this.signupMode})}
+  todeleteUserMode = () => {this.setState({mode: this.deleteUserMode})}
+
 
   handleChange({ target }) {
     this.setState({
@@ -56,8 +64,10 @@ class Login extends React.Component {
   guestMode = () => {
     return (
       <div>
-        <button onClick={this.toLoginMode}>login</button>
-        <button onClick={this.toSignupMode}>sign up</button>
+        <button onClick={this.toLoginMode}>Login</button>
+        <button onClick={this.toSignupMode}>Sign Up</button>
+          <button onClick={this.todeleteUserMode}>Delete User</button>
+
       </div>
     )
   }
@@ -65,8 +75,33 @@ class Login extends React.Component {
   loginMode = () => {
     return (
       <div>
-        <button onClick={this.toLoginMode}>login</button>
+        <button onClick={()=>this.signIn(this.state.username,
+            this.state.password)}>login</button>
         <button onClick={this.toGuestMode}>back</button>
+        <br/>
+        <input
+          type="text"
+          name="username"
+          placeholder="user name ..."
+          // value={ this.state.username }
+          onChange={ this.handleChange }
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="password ..."
+          // value={ this.state.password }
+          onChange={ this.handleChange }
+        />
+      </div>
+    )
+  }
+
+  deleteUserMode = () => {
+    return (
+      <div>
+        <button onClick={()=>this.signIn(this.state.username,
+            this.state.password, true)}>Delete user</button>
         <br/>
         <input
           type="text"
@@ -86,10 +121,12 @@ class Login extends React.Component {
     )
   }
 
+
   signupMode = () => {
     return (
       <div>
-        <button onClick={this.signUp}>sign up</button>
+        <button onClick={()=>this.signUp(this.state.first_name,
+            this.state.last_name, this.state.username, this.state.password)}>sign up</button>
         <button onClick={this.toGuestMode}>back</button>
         <br/>
         <input

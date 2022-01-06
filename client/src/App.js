@@ -20,7 +20,8 @@ class Display extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: <Board/>
+      display: <Board/>,
+      currentUser: "Guest"
     }
   }
 
