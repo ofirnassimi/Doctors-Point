@@ -171,7 +171,7 @@ class Search extends React.Component {
         {/*  setSelect={(val) => {this.setState({state: val})}}*/}
         {/*  options={this.state.states}*/}
         {/*/>*/}
-        <br/>
+        <br/><br/>
         <label>City: </label>
         <input
           type="text"
@@ -184,7 +184,7 @@ class Search extends React.Component {
         {/*  setSelect={(val) => {this.setState({city: val})}}*/}
         {/*  options={this.state.cities}*/}
         {/*/>*/}
-        <br/>
+        <br/><br/>
         <label>Specialty: </label>
         <input
           type="text"
@@ -197,7 +197,7 @@ class Search extends React.Component {
         {/*  setSelect={(val) => {this.setState({specialty: val})}}*/}
         {/*  options={this.state.specialties}*/}
         {/*/>*/}
-        <br/>
+        <br/><br/>
         <button onClick={() => {this.invokeSearch()}}>Search</button>
         <button onClick={() => {this.props.getTop10()}}>TOP 10</button><br/>
         {this.state.result}

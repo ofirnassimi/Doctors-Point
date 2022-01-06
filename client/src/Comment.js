@@ -45,7 +45,7 @@ export default class Comment extends React.Component {
                 placeholder="Enter Doctors ID"
                 // value={ this.state.docId }
                 onChange={ this.handleChange }
-              /><br/>
+              /><br/><br/>
                 <label>Feedback</label>
               <input
                 type="text"
@@ -53,7 +53,7 @@ export default class Comment extends React.Component {
                 placeholder="Enter Feedback"
                 // value={ this.state.docId }
                 onChange={ this.handleChange }
-              /><br/><label>Rate (1-lowest, 5-highest)</label>
+              /><br/><br/><label>Rate (1-lowest, 5-highest)</label>
                 <select onChange={(event)=>{this.setState({rate: event.target.value})}}>
                     <option>1</option>
                     <option>2</option>
@@ -61,16 +61,16 @@ export default class Comment extends React.Component {
                     <option>4</option>
                     <option>5</option>
                 </select>
-                <br/>
+                <br/><br/>
                 <button onClick={()=>this.addComment(
                     this.state.docId,
                     this.state.feedback,
                     this.state.rate)}>Submit Comment</button>
                 <br/>
                 <br/>
-                <br/>
+                <br/><br/>
                 <label>Read feedbacks on specific Dr. by filling Dr's ID above</label><br/>
-
+<br/>
                 <button onClick={()=>this.getComment(this.state.docId)}>Get Comment by ID</button>
 
                 <table>
