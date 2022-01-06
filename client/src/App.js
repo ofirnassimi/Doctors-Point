@@ -26,9 +26,9 @@ class Display extends React.Component {
     return (
       <div>
         <div>
-          <button onClick={() => {this.setState({display: <Search/>})}}>search</button>
-          <button onClick={() => {this.setState({display: <Login/>})}}>login</button>
-          <button onClick={() => {this.setState({display: <Board/>})}}>board</button>
+          <button onClick={() => {this.setState({display: <Comment/>})}}>Comment</button>
+          <button onClick={() => {this.setState({display: <Login/>})}}>Login</button>
+          <button onClick={() => {this.setState({display: <Board/>})}}>Board</button>
         </div>
         <br/>
         {this.state.display}
@@ -36,6 +36,70 @@ class Display extends React.Component {
     )
   }
 }
+
+class Comment extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            comments: [],
+            docId: 0,
+        }
+
+        this.handleChange = this.handleChange.bind(this)
+
+    }
+
+    handleChange({ target }) {
+    this.setState({
+      [target.name]: target.value
+    });
+    // console.log(this.state);
+  }
+
+    getComment(docID){
+        Axios.get('http://localhost:5000/comments/?docId='+docID).then(
+      (response) => {
+        const data = response.data;
+        this.setState({comments: data});
+        })
+    }
+
+    addComment(docID, comment){
+        Axios.post('http://localhost:5000/comments/', {docId:docID, text: comment})
+    }
+
+    render() {
+        return(
+            <div>
+              <label>docID</label>
+              <input
+                type="text"
+                name="docId"
+                placeholder="Enter Doctors ID"
+                // value={ this.state.docId }
+                onChange={ this.handleChange }
+              />
+                <label>Feedback</label>
+              <input
+                type="text"
+                name="feedback"
+                placeholder="Enter Feedback"
+                // value={ this.state.docId }
+                onChange={ this.handleChange }
+              />
+                <select>
+                    <option>1 (Poor)</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5 (Excellent)</option>
+                </select>
+
+            </div>
+        )
+    }
+}
+
 
 class Span extends React.Component {
   constructor(props) {
@@ -97,7 +161,6 @@ class Board extends React.Component {
     return (
       <div>
         <Search getDoctors={this.getDoctors}/>
-        {/*<Search getDoctors={'this.getDoctors'}/>*/}
         <table>
           {this.state.data.map((doctor) => <tr>{doctor.map((item) => <td>{item}</td>)}</tr>)}
         </table>
@@ -126,7 +189,6 @@ class Search extends React.Component {
   }
 
   getStates() {
-    console.log('getStates call')
     Axios.get('http://localhost:5000/states/').then(
       (res) => {
         this.setState({states: res.data})
@@ -182,6 +244,7 @@ class StateSelect extends React.Component {
     super(props);
     this.state = {
       options: [],
+        chosen: ""
     };
     this.getOptions = this.getOptions.bind(this);
     this.getOptions();
@@ -197,9 +260,11 @@ class StateSelect extends React.Component {
 
   render() {
     return (
-      <select>
+        <div>
+      <select onChange={(event)=>{this.setState({chosen: event.target.value})}}>
         {this.state.options.map((option) => <option>{option}</option>)}
       </select>
+            </div>
     )
   }
 }
