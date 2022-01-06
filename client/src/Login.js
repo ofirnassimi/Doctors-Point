@@ -2,7 +2,7 @@ import React from "react";
 import Axios from "axios";
 
 class Login extends React.Component {
-  // guest = {id: 0, first_name: 'dear', last_name: 'guest'};
+  guest = {first_name: 'Guest', last_name: ''};
 
   constructor(props) {
     super(props);
@@ -36,28 +36,26 @@ class Login extends React.Component {
     }
   }
 
-  signIn(username, password, delUser=false) {
+  signIn(username, password) {
     const params = {user_name: username, password: password}
     Axios.get('http://localhost:5000/login/', {params: params}).then(
       (res) => {this.handleLoginResponse(res)}
     )
   }
-        // // if (res.data.length > 0) this.props.setUser(res.data) TODO: verify known user
-        //   if(delUser){
-        //       Axios.delete('http://localhost:5000/login/', {params: {user_name: username}})
-        //   }
 
   signUp(first_name, last_name, username, password) {
     const data = {user_name: username, password: password,
                   first_name: first_name, last_name: last_name}
-    Axios.post('http://localhost:5000/login/', data).then(
+    Axios.post('http://localhost:5000/users/', data).then(
       (res) => {this.handleLoginResponse(res)}
     )
   }
 
-  signOut() {
-
+  deleteUser(username, password) {
+    const data = {user_name: username, password: password}
+    Axios.delete('http://localhost:5000/users/', {params: data})
   }
+
 
   toGuestMode = () => {this.setState({mode: this.guestMode})}
   toLoginMode = () => {this.setState({mode: this.loginMode})}

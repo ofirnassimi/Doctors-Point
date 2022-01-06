@@ -21,22 +21,32 @@ class Display extends React.Component {
     super(props);
     this.state = {
       display: <Board/>,
-      currentUser: {name: "Guest", id: 0}
+      currentUser: "Guest",
+        logged: false
     }
   }
 
-  login = <Login setUser={(user) => {
-    this.setState({currentUser: {name: user[1]+' '+user[2], id: user[0]}}); console.log('display '+this.state)
-  }}/>
+
+
+  login = (
+      <button onClick={() => {this.setState({display:
+          <Login setUser={(name) => {
+        this.setState({currentUser:name, logged : true}); console.log('display '+this.state)
+    }}/>
+  })}}>Login</button>)
+
+    logout = <button onClick={()=>{
+        this.setState({currentUser: "Guest", logged: false})
+    }}>LogOut</button>
 
   render() {
     return (
       <div>
         <div>
-          <p>you are connected as {this.state.currentUser.name}</p>
+          <p>Connected as {this.state.currentUser.name}</p>
           <button onClick={() => {this.setState({display: <Comment/>})}}>Comment</button>
-          <button onClick={() => {this.setState({display: this.login})}}>Login</button>
           <button onClick={() => {this.setState({display: <Board/>})}}>Board</button>
+            {this.state.logged ? this.logout : this.login}
         </div>
         <br/>
         {this.state.display}
