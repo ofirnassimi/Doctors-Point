@@ -104,12 +104,32 @@ class Search extends React.Component {
       specialty: null,
       result: null,
       states: [],
+      cities: [],
+      specialties: []
     }
 
     this.handleChange = this.handleChange.bind(this)
     this.invokeSearch = this.invokeSearch.bind(this)
     this.getStates = this.getStates.bind(this);
+    this.getSpecialties();
+    this.getCities();
     this.getStates();
+  }
+
+  getCities() {
+    Axios.get('http://localhost:5000/city/').then(
+      (res) => {
+        this.setState({cities: res.data})
+      }
+    )
+  }
+
+  getSpecialties() {
+    Axios.get('http://localhost:5000/specialty/').then(
+      (res) => {
+        this.setState({specialties: res.data})
+      }
+    )
   }
 
   getStates() {
@@ -140,20 +160,44 @@ class Search extends React.Component {
     return (
       <div>
         <label>State: </label>
-        <Select
-          setSelect={(val) => {this.setState({state: val})}}
-          suffix='states/'
-        /><br/>
+        <input
+          type="text"
+          name="state"
+          placeholder="Enter state ..."
+          value={ this.state.state }
+          onChange={ this.handleChange }
+        />
+        {/*<Select*/}
+        {/*  setSelect={(val) => {this.setState({state: val})}}*/}
+        {/*  options={this.state.states}*/}
+        {/*/>*/}
+        <br/>
         <label>City: </label>
-        <Select
-          setSelect={(val) => {this.setState({city: val})}}
-          suffix='city/'
-        /><br/>
+        <input
+          type="text"
+          name="city"
+          placeholder="Enter city ..."
+          value={ this.state.city }
+          onChange={ this.handleChange }
+        />
+        {/*<Select*/}
+        {/*  setSelect={(val) => {this.setState({city: val})}}*/}
+        {/*  options={this.state.cities}*/}
+        {/*/>*/}
+        <br/>
         <label>Specialty: </label>
-        <Select
-          setSelect={(val) => {this.setState({specialty: val})}}
-          suffix='specialty/'
-        /><br/>
+        <input
+          type="text"
+          name="specialty"
+          placeholder="Enter specialty ..."
+          value={ this.state.specialty }
+          onChange={ this.handleChange }
+        />
+        {/*<Select*/}
+        {/*  setSelect={(val) => {this.setState({specialty: val})}}*/}
+        {/*  options={this.state.specialties}*/}
+        {/*/>*/}
+        <br/>
         <button onClick={() => {this.invokeSearch()}}>Search</button>
         <button onClick={() => {this.props.getTop10()}}>TOP 10</button><br/>
         {this.state.result}
@@ -169,7 +213,7 @@ class Select extends React.Component {
       options: [],
     };
     this.getOptions = this.getOptions.bind(this);
-    this.getOptions();
+    // this.getOptions();
   }
 
   getOptions() {
