@@ -104,7 +104,6 @@ class Search extends React.Component {
       specialty: null,
       result: null,
       states: [],
-        id: 0,
     }
 
     this.handleChange = this.handleChange.bind(this)
@@ -132,7 +131,6 @@ class Search extends React.Component {
       state: this.state.state,
       city: this.state.city,
       specialty: this.state.specialty,
-        id: this.state.id,
     }
     console.log(filters)
     this.props.getDoctors(filters)
@@ -155,11 +153,7 @@ class Search extends React.Component {
         <Select
           setSelect={(val) => {this.setState({specialty: val})}}
           suffix='specialty/'
-        />        <label>Doctor's ID: </label>
-
-          <input
-          type="number"
-          onChange={(event) => {this.setState({id:event.target.value})}}/><br/>
+        />
         <button onClick={() => {this.invokeSearch()}}>Search</button>
         <button onClick={() => {this.props.getTop10()}}>TOP 10</button><br/>
         {this.state.result}
