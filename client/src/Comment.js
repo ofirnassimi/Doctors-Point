@@ -3,15 +3,16 @@ import Axios from "axios";
 
 export default class Comment extends React.Component {
     constructor(props) {
-        super(props);
-        this.state = {
-            comments: [],
-            docId: 0,
-            rate: 0
-        }
+      super(props);
+      this.state = {
+        columns: [],
+        comments: [],
+        docId: 0,
+        rate: 0,
+        feedback: ''
+      }
 
-        this.handleChange = this.handleChange.bind(this)
-
+      this.handleChange = this.handleChange.bind(this)
     }
 
     handleChange({ target }) {
@@ -22,15 +23,15 @@ export default class Comment extends React.Component {
   }
 
     getComment(docID){
-        Axios.get('http://localhost:5000/comments/?docId='+docID).then(
+        Axios.get('http://localhost:5000/get_comments/', {params: {doctor_id: docID}}).then(
       (response) => {
         const data = response.data;
-        this.setState({comments: data});
+        this.setState({comments: data[0], columns: data[1]});
         })
     }
 
     addComment(docID, comment, rate){
-        Axios.post('http://localhost:5000/comments/', {docId:docID, text: comment, rate: rate})
+        Axios.post('http://localhost:5000/send_comment/', {doctor_id: docID, text: comment, rating: rate})
     }
 
     render() {
@@ -63,7 +64,7 @@ export default class Comment extends React.Component {
                 <br/>
                 <button onClick={()=>this.addComment(
                     this.state.docId,
-                    this.state.comment,
+                    this.state.feedback,
                     this.state.rate)}>Submit Comment</button>
                 <br/>
                 <br/>
@@ -73,6 +74,7 @@ export default class Comment extends React.Component {
                 <button onClick={()=>this.getComment(this.state.docId)}>Get Comment by ID</button>
 
                 <table>
+          {this.state.columns.map((col) => <th>{col}</th>)}
           {this.state.comments.map((com) => <tr>{com.map((item) => <td>{item}</td>)}</tr>)}
         </table>
             </div>
