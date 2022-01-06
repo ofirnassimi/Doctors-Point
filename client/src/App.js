@@ -20,7 +20,7 @@ class Display extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: <Board/>,
+      display: (<h3>Welcome to Doctors' Point App!</h3>),
       currentUser: "Guest",
         logged: false
     }
@@ -45,7 +45,7 @@ class Display extends React.Component {
         <div>
           <p>Connected as {this.state.currentUser}</p>
           <button onClick={() => {this.setState({display: <Comment/>})}}>Comments</button>
-          <button onClick={() => {this.setState({display: <Board/>})}}>Board</button>
+          <button onClick={() => {this.setState({display: <Board/>})}}>Search</button>
             {this.state.logged ? this.logout : this.login}
         </div>
         <br/>
@@ -87,8 +87,8 @@ class Board extends React.Component {
         <Search getDoctors={this.getDoctors} getTop10={this.getTop10}/>
         <br/>
         <table>
-          {/*{this.state.columns.map((column) => <th>{column}</th>)}*/}
-          {/*{this.state.data.map((doctor) => <tr>{doctor.map((item) => <td>{item}</td>)}</tr>)}*/}
+          {this.state.columns.map((column) => <th>{column}</th>)}
+          {this.state.data.map((doctor) => <tr>{doctor.map((item) => <td>{item}</td>)}</tr>)}
         </table>
       </div>
     )
@@ -141,17 +141,17 @@ class Search extends React.Component {
   render() {
     return (
       <div>
-        <label>state: </label>
+        <label>State: </label>
         <Select
           setSelect={(val) => {this.setState({state: val})}}
           suffix='states/'
         />
-        <label>city: </label>
+        <label>City: </label>
         <Select
           setSelect={(val) => {this.setState({city: val})}}
           suffix='city/'
         />
-        <label>specialty: </label>
+        <label>Specialty: </label>
         <Select
           setSelect={(val) => {this.setState({specialty: val})}}
           suffix='specialty/'
@@ -160,7 +160,7 @@ class Search extends React.Component {
           <input
           type="number"
           onChange={(event) => {this.setState({id:event.target.value})}}/><br/>
-        <button onClick={() => {this.invokeSearch()}}>search</button>
+        <button onClick={() => {this.invokeSearch()}}>Search</button>
         <button onClick={() => {this.props.getTop10()}}>TOP 10</button><br/>
         {this.state.result}
       </div>
