@@ -6,8 +6,11 @@ class Operations:
     __con = Connection()
     __sql = SqlFactory()
 
+    def top_ten(self):
+        return self.__con.query_multi(self.__sql.top_doctors(), True)
+
     def filter_doctors(self, **kwargs):
-        return self.__con.query_multi(self.__sql.doctors(**kwargs))
+        return self.__con.query_multi(self.__sql.doctors(**kwargs), True)
 
     def sign_up(self, first_name, last_name, email, password):
         return self.__con.exec(self.__sql.insert_user(first_name, last_name, email, password))
@@ -18,8 +21,8 @@ class Operations:
             self.__con.exec(self.__sql.update_user(user[0]))
         return user
 
-    def sign_down(self, user_id):
-        return self.__con.exec(self.__sql.delete_user(user_id))
+    def sign_down(self, user_name, password):
+        return self.__con.exec(self.__sql.delete_user(user_name, password))
 
     def get_specialties(self):
         return [spec[0] for spec in self.__con.query_multi(self.__sql.specialties())]

@@ -60,22 +60,24 @@ class Board extends React.Component {
     super(props);
     this.state = {
       filters: {},
+      columns: [],
       data: []
     };
     this.getDoctors = this.getDoctors.bind(this)
+    this.getTop10();
   }
 
   getDoctors = (filters) => {
     Axios.get('http://localhost:5000/search/', {params: filters}).then(
       (res) => {
-        this.setState({data: res.data});
+        this.setState({data: res.data[0], columns: res.data[1]});
       }
     )
   }
 
   getTop10 = () => {
     Axios.get('http://localhost:5000/top10/').then((res) => {
-        this.setState({data: res.data})
+        this.setState({data: res.data[0], columns: res.data[1]})
       })
   }
 
@@ -83,7 +85,9 @@ class Board extends React.Component {
     return (
       <div>
         <Search getDoctors={this.getDoctors} getTop10={this.getTop10}/>
+        <br/>
         <table>
+          {this.state.columns.map((column) => <th>{column}</th>)}
           {this.state.data.map((doctor) => <tr>{doctor.map((item) => <td>{item}</td>)}</tr>)}
         </table>
       </div>

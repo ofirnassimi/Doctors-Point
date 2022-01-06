@@ -15,21 +15,25 @@ def response(json_obj):
 	return res
 
 
+@app.route('/top10/', methods=['GET'])
+def top_ten():
+	return response(op.top_ten())
+
+
 @app.route('/login/', methods=['GET'])
 def login():
 	user_name = request.args.get('user_name')
 	password = request.args.get('password')
-	r = op.sign_in(user_name, password)
-	print(r)
-	return response(r)
+	return response(op.sign_in(user_name, password))
 
 
 @app.route('/users/', methods=['POST', 'DELETE'])
 @cross_origin()
 def users():
 	if request.method == 'DELETE':
-		user_id = request.args.get('user_id')
-		return response(op.sign_down(user_id))
+		user_name = request.args.get('user_name')
+		password = request.args.get('password')
+		return response(op.sign_down(user_name, password))
 
 	if request.method == 'POST':
 		data = request.json
@@ -42,7 +46,7 @@ def users():
 
 
 @app.route('/comments/', methods=['GET', 'POST', 'DELETE'])
-# @cross_origin()
+@cross_origin()
 def comment():
 	if request.method == 'GET':
 		return response('comment get')

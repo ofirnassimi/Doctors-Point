@@ -125,9 +125,20 @@ class SqlFactory:
                f"WHERE id={user_id}"
 
     @staticmethod
-    def delete_user(user_id):
+    def delete_user(user_name, password):
         return f"DELETE FROM users " \
-               f"WHERE id={user_id}"
+               f"WHERE email={user_name} AND password={password}"
+
+    @staticmethod
+    def top_doctors(limit=10):
+        return f"SELECT rating, first_name, middle_name, last_name, gender, specialty.name as specialty, " \
+               f"       YEAR(NOW())-doctors.graduation_year as seniority " \
+               f"FROM (SELECT AVG(rating) as rating, doctor_id FROM comments " \
+               f"      GROUP BY doctor_id " \
+               f"      ORDER BY rating DESC" \
+               f"      LIMIT {limit}) as top_rated " \
+               f"LEFT JOIN doctors on top_rated.doctor_id = doctors.id " \
+               f"LEFT JOIN specialty on specialty.id = doctors.specialty_id"
 
     def doctors1(self, first_name, last_name, specialty, address, city, state_symbol, order_by, limit = 20):
         columns = 'doctors.first_name, doctors.middle_name, doctors.last_name, doctors.gender, ' \

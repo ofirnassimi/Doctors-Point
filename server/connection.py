@@ -15,9 +15,10 @@ class Connection:
     def exec(self, operation: str):
         self.__cursor.execute(operation)
 
-    def query_multi(self, query: str):
+    def query_multi(self, query: str, columns=False):
         self.__cursor.execute(query)
-        return self.__cursor.fetchall()
+        data = self.__cursor.fetchall()
+        return data, self.__cursor.column_names if columns else data
 
     def query_single(self, query: str):
         self.__cursor.execute(query)
