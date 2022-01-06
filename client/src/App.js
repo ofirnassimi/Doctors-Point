@@ -143,17 +143,17 @@ class Search extends React.Component {
         <Select
           setSelect={(val) => {this.setState({state: val})}}
           suffix='states/'
-        />
+        /><br/>
         <label>City: </label>
         <Select
           setSelect={(val) => {this.setState({city: val})}}
           suffix='city/'
-        />
+        /><br/>
         <label>Specialty: </label>
         <Select
           setSelect={(val) => {this.setState({specialty: val})}}
           suffix='specialty/'
-        />
+        /><br/>
         <button onClick={() => {this.invokeSearch()}}>Search</button>
         <button onClick={() => {this.props.getTop10()}}>TOP 10</button><br/>
         {this.state.result}
