@@ -10,6 +10,7 @@ op = Operations()
 
 
 def response(json_obj):
+	print(json_obj)
 	res = jsonify(json_obj)
 	res.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
 	return res
@@ -42,19 +43,19 @@ def users():
 		first_name = data.get('first_name')
 		last_name = data.get('last_name')
 		op.sign_up(first_name, last_name, user_name, password)
-		return redirect('/login/')
+		res = op.sign_in(user_name, password)
+		return jsonify(res)
 
 
-@app.route('/comments/', methods=['GET', 'POST', 'DELETE'])
+@app.route('/get_comments/', methods=['GET'])
+def get_comments():
+	return response(op.get_comments(request.args.get('doctor_id')))
+
+
+@app.route('/send_comment/', methods=['POST'])
 @cross_origin()
-def comment():
-	if request.method == 'GET':
-		return response('comment get')
-	if request.method == 'POST':
-		data = request.data
-		return jsonify(data)
-	if request.method == 'DELETE':
-		return response('comment delete')
+def send_comment():
+	return jsonify(op.add_comment(**request.json))
 
 
 @app.route('/specialty/', methods=['GET'])
