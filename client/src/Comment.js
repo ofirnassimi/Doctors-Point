@@ -63,7 +63,11 @@ export default class Comment extends React.Component {
                     this.state.docId,
                     this.state.comment,
                     this.state.rate)}>Submit Comment</button>
+                <button onClick={()=>this.getComment(this.state.docId)}>Get Comment by ID</button>
 
+                <table>
+          {this.state.comments.map((com) => <tr>{com.map((item) => <td>{item}</td>)}</tr>)}
+        </table>
             </div>
         )
     }
