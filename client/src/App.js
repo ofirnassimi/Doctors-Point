@@ -148,6 +148,12 @@ class Search extends React.Component {
     this.props.getDoctors(filters)
   }
 
+  getTop10 = () => {
+    Axios.get('http://localhost:5000/top10/').then((res) => {
+        this.setState({result: res.data})
+      })
+  }
+
   render() {
     return (
       <div>
@@ -167,6 +173,7 @@ class Search extends React.Component {
           suffix='specialty/'
         />
         <button onClick={() => {this.invokeSearch()}}>search</button>
+        <button onClick={() => this.getTop10()}>TOP 10</button><br/>
         {this.state.result}
       </div>
     )
@@ -201,7 +208,8 @@ class Select extends React.Component {
     )
   }
 }
-//
+
+
 // class StateSelect extends React.Component {
 //   constructor(props) {
 //     super(props);
