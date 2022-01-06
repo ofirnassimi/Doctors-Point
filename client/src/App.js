@@ -20,7 +20,7 @@ class Display extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: <Search/>
+      display: <Board/>
     }
   }
 
@@ -89,7 +89,6 @@ class Board extends React.Component {
     Axios.get('http://localhost:5000/search/', {params: filters}).then(
       (response) => {
         const data = response.data;
-        console.log(data);
         this.setState({data: data});
       }
     )
@@ -119,11 +118,9 @@ class Search extends React.Component {
     }
 
     this.handleChange = this.handleChange.bind(this)
-    this.invokeSearch = this.invokeSearch.bind(props)
+    this.invokeSearch = this.invokeSearch.bind(this)
     this.getStates = this.getStates.bind(this);
     this.getStates();
-
-    console.log(props)
   }
 
   getStates() {
@@ -138,58 +135,55 @@ class Search extends React.Component {
     this.setState({
       [target.name]: target.value
     });
-    console.log(this.state);
   }
 
   invokeSearch = () => {
-    this.props.getDoctors(this.state)
+    const filters = {
+      state: this.state.state,
+      city: this.state.city,
+      specialty: this.state.specialty,
+    }
+    console.log(filters)
+    this.props.getDoctors(filters)
   }
 
   render() {
     return (
       <div>
         <label>state: </label>
-        <StateSelect
-          onChange={
-            (val) => {this.setState({state: val})}
-          }
+        <Select
+          setSelect={(val) => {this.setState({state: val})}}
+          suffix='states/'
         />
         <label>city: </label>
-        <input
-          type="text"
-          name="city"
-          placeholder="Enter city ..."
-          value={ this.state.city }
-          onChange={ this.handleChange }
+        <Select
+          setSelect={(val) => {this.setState({city: val})}}
+          suffix='city/'
         />
         <label>specialty: </label>
-        <input
-          type="text"
-          name="specialty"
-          placeholder="Enter specialty ..."
-          value={ this.state.specialty }
-          onChange={ this.handleChange }
+        <Select
+          setSelect={(val) => {this.setState({specialty: val})}}
+          suffix='specialty/'
         />
-        <button onClick={this.invokeSearch}>search</button>
+        <button onClick={() => {this.invokeSearch()}}>search</button>
         {this.state.result}
       </div>
     )
   }
 }
 
-class StateSelect extends React.Component {
+class Select extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       options: [],
-        chosen: ""
     };
     this.getOptions = this.getOptions.bind(this);
     this.getOptions();
   }
 
   getOptions() {
-    Axios.get('http://localhost:5000/states/').then(
+    Axios.get('http://localhost:5000/'+this.props.suffix).then(
       (res) => {
         this.setState({options: res.data})
       }
@@ -198,41 +192,70 @@ class StateSelect extends React.Component {
 
   render() {
     return (
-        <div>
-      <select onChange={(event)=>{this.setState({chosen: event.target.value})}}>
-        {this.state.options.map((option) => <option>{option}</option>)}
-      </select>
-            </div>
-    )
-  }
-}
-
-class Switch extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      display: <StateSelect/>,
-    }
-    this.searchMode = this.searchMode.bind(this)
-    this.selectMode = this.selectMode.bind(this)
-  }
-
-  searchMode() {
-    this.setState({display: <Search/>})
-  }
-
-  selectMode() {
-    this.setState({display: <StateSelect/>})
-  }
-
-  render() {
-    return (
       <div>
-        <button onClick={this.searchMode}>search</button>
-        <button onClick={this.selectMode}>select</button>
-        <br/>
-        {this.state.display}
+        <select onChange={(e) => this.props.setSelect(e.target.value)}>
+          {this.state.options.map((option) => <option>{option}</option>)}
+        </select>
       </div>
     )
   }
 }
+//
+// class StateSelect extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       options: [],
+//     };
+//     this.getOptions = this.getOptions.bind(this);
+//     this.getOptions();
+//   }
+//
+//   getOptions() {
+//     Axios.get('http://localhost:5000/states/').then(
+//       (res) => {
+//         this.setState({options: res.data})
+//       }
+//     )
+//   }
+//
+//   render() {
+//     return (
+//       <div>
+//         <select onChange={(e) => this.props.setSelect(e.target.value)}>
+//           {this.state.options.map((option) => <option>{option}</option>)}
+//         </select>
+//       </div>
+//     )
+//   }
+// }
+
+// class Switch extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       display: <StateSelect/>,
+//     }
+//     this.searchMode = this.searchMode.bind(this)
+//     this.selectMode = this.selectMode.bind(this)
+//   }
+//
+//   searchMode() {
+//     this.setState({display: <Search/>})
+//   }
+//
+//   selectMode() {
+//     this.setState({display: <StateSelect/>})
+//   }
+//
+//   render() {
+//     return (
+//       <div>
+//         <button onClick={this.searchMode}>search</button>
+//         <button onClick={this.selectMode}>select</button>
+//         <br/>
+//         {this.state.display}
+//       </div>
+//     )
+//   }
+// }
