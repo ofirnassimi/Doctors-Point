@@ -18,7 +18,7 @@ class Connection:
     def query_multi(self, query: str, columns=False):
         self.__cursor.execute(query)
         data = self.__cursor.fetchall()
-        return data, self.__cursor.column_names if columns else data
+        return (data, self.__cursor.column_names) if columns else data
 
     def query_single(self, query: str):
         self.__cursor.execute(query)

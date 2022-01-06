@@ -43,18 +43,12 @@ class SqlFactory:
         return f"INSERT IGNORE INTO doctors_clinics (doctor_id, clinic_id) " \
                f"VALUES (({doctor_id_query}), ({clinic_id_query}))"
 
-    def insert_comment(self, doctor_first_name, doctor_last_name, specialty, user_email, rating, text):
-        doctor_id_query = self.select_doctor(doctor_first_name, doctor_last_name, specialty)
-        date_query = self.get_date()
-        columns = 'doctor_id, rating, publish_date'
-        values = f"({doctor_id_query}), {rating}, ({date_query})"
-        if user_email:
-            user_id_query = self.select_user(user_email)
-            columns += ', writer_id'
-            values += f", '{user_id_query}'"
-        if text:
-            columns += ', text'
-            values += f", '{text}'"
+    def insert_comment(self, doctor_id, rating, text='', user_id=None):
+        columns = 'doctor_id, rating, text, publish_date'
+        values = f"{doctor_id}, '{rating}', '{text}', NOW()"
+        if user_id:
+            columns += ", writer_id"
+            values += f", {user_id}"
         return f"INSERT INTO comments ({columns}) " \
                f"VALUES ({values})"
 
@@ -101,6 +95,12 @@ class SqlFactory:
         return "SELECT CURDATE()"
 
     @staticmethod
+    def select_comments(doctor_id):
+        return f"SELECT rating, text, publish_date " \
+               f"FROM comments " \
+               f"WHERE doctor_id={doctor_id}"
+
+    @staticmethod
     def rating():
         return "SELECT doctor_id, AVG(rating) as rating " \
                "FROM comments " \
@@ -127,7 +127,7 @@ class SqlFactory:
     @staticmethod
     def delete_user(user_name, password):
         return f"DELETE FROM users " \
-               f"WHERE email={user_name} AND password={password}"
+               f"WHERE email='{user_name}' AND password='{password}'"
 
     @staticmethod
     def top_doctors(limit=10):
