@@ -59,6 +59,16 @@ class SqlFactory:
                f"VALUES ({values})"
 
     @staticmethod
+    def insert_comment_by_id(doctor_id, rating, text='', user_id=None):
+        columns = 'doctor_id, rating, text, publish_date'
+        values = f"{doctor_id}, {rating}, '{text}', NOW()"
+        if user_id:
+            columns += ', writer_id'
+            values += f"{user_id}"
+        return f"INSERT INTO comments ({columns}) " \
+               f"VALUES ({values})"
+
+    @staticmethod
     def select_city(city, state_symbol):
         return f"SELECT id " \
                f"FROM city " \
@@ -83,8 +93,19 @@ class SqlFactory:
                f"WHERE first_name='{first_name}' AND last_name='{last_name}' AND specialty.name='{specialty}'"
 
     @staticmethod
+    def select_doctor_id(limit=20):
+        return f"SELECT id FROM doctors LIMIT {limit}"
+
+    @staticmethod
     def get_date():
         return "SELECT CURDATE()"
+
+    @staticmethod
+    def rating():
+        return "SELECT doctor_id, AVG(rating) as rating " \
+               "FROM comments " \
+               "GROUP BY doctor_id " \
+               "ORDER BY rating DESC"
 
     @staticmethod
     def insert_user(first_name, last_name, email, password):
@@ -108,31 +129,31 @@ class SqlFactory:
         return f"DELETE FROM users " \
                f"WHERE id={user_id}"
 
-    def doctors(self, first_name, last_name, specialty, address, city, state_symbol, order_by, limit = 20):
+    def doctors1(self, first_name, last_name, specialty, address, city, state_symbol, order_by, limit = 20):
         columns = 'doctors.first_name, doctors.middle_name, doctors.last_name, doctors.gender, ' \
                   'doctors.graduation_year, specialty.name, clinics.address, city.name, states.name, ' \
                   'clinics.phone_number'
-        tables = 'doctors, specialty, clinics, city, states,  doctors_clinics'
-        conditins = f"doctors.specialty_id = specialty.id AND doctors.id = doctors_clinics.doctor_id " \
-                    f"AND doctors_clinics.clinic_id = clinics.id AND clinics.city_id = city.id " \
-                    f"AND city.state_symbol = states.symbol"
+        tables = 'doctors, specialty, clinics, city, states, doctors_clinics'
+        conditions = f"doctors.specialty_id = specialty.id AND doctors.id = doctors_clinics.doctor_id " \
+                     f"AND doctors_clinics.clinic_id = clinics.id AND clinics.city_id = city.id " \
+                     f"AND city.state_symbol = states.symbol"
         if first_name:
-            conditins += f" AND doctors.first_name = '{first_name}'"
+            conditions += f" AND doctors.first_name = '{first_name}'"
         if last_name:
-            conditins += f" AND doctors.last_name = '{last_name}'"
+            conditions += f" AND doctors.last_name = '{last_name}'"
         if specialty:
             specialty_id_query = self.select_specialty(specialty)
-            conditins += f" AND specialty.id = ({specialty_id_query})"
+            conditions += f" AND specialty.id = ({specialty_id_query})"
         if address:
-            conditins += f" AND clinics.address = '{address}'"
+            conditions += f" AND clinics.address = '{address}'"
         if city:
-            city_id_query = self.select_city(city)
-            conditins += f" AND city.id = ({city_id_query})"
+            city_id_query = self.select_city(city, state_symbol)
+            conditions += f" AND city.id = ({city_id_query})"
         if state_symbol:
-            conditins += f" AND state.symbol = '{state_symbol}'"
+            conditions += f" AND state.symbol = '{state_symbol}'"
         query = f"SELECT {columns} " \
                 f"FROM {tables} " \
-                f"WHERE ({conditins}) "
+                f"WHERE ({conditions}) "
         if order_by:
             query += f" ORDER BY {order_by}"
         if limit:
@@ -140,18 +161,40 @@ class SqlFactory:
         return query
 
     @staticmethod
-    def get_all_doctors():
-        return f"SELECT clinics.address,clinics.phone_number, city.name, states.name," \
-               f"       doctors.first_name, doctors.middle_name, doctors.last_name, doctors.gender," \
-               f"       doctors.graduation_year, specialty.name " \
-               f"FROM doctors_clinics " \
-               f"    LEFT OUTER JOIN clinics on doctors_clinics.clinic_id = clinics.id " \
-               f"    LEFT OUTER JOIN city on clinics.city_id = city.id " \
-               f"    LEFT OUTER JOIN states on city.state_symbol = states.symbol " \
-               f"    LEFT OUTER JOIN doctors on doctors_clinics.doctor_id = doctors.id " \
-               f"    LEFT OUTER JOIN specialty on specialty.id = doctors.specialty_id " \
-               f"ORDER BY first_name " \
-               f"LIMIT 20"
+    def doctors(first_name='', last_name='', specialty='', address='', city='', state='',
+                order_by='seniority', desc=False, limit=20):
+        conditions = []
+        if first_name:
+            conditions.append(f"doctors.first_name = '{first_name}'")
+        if last_name:
+            conditions.append(f"doctors.last_name = '{last_name}'")
+        if specialty:
+            conditions.append(f"specialty.name = '{specialty}'")
+        # if address:
+        #     conditions.append(f"clinics.address = '{address}'")
+        if city:
+            conditions.append(f"city.name = '{city}'")
+        if state:
+            conditions.append(f"states.name = '{state}'")
+        if order_by == 'seniority':
+            conditions.append("doctors.graduation_year IS NOT NULL")
+
+        sql = f"SELECT doctors.first_name as first_name, doctors.middle_name as middle_name, " \
+              f"       doctors.last_name as last_name, doctors.gender as gender, specialty.name as specialty, " \
+              f"       YEAR(NOW())-doctors.graduation_year as seniority, clinics.address as address, " \
+              f"       clinics.phone_number as phone, city.name as city, states.name as state " \
+              f"FROM doctors_clinics " \
+              f"    LEFT OUTER JOIN clinics on doctors_clinics.clinic_id = clinics.id " \
+              f"    LEFT OUTER JOIN city on clinics.city_id = city.id " \
+              f"    LEFT OUTER JOIN states on city.state_symbol = states.symbol " \
+              f"    LEFT OUTER JOIN doctors on doctors_clinics.doctor_id = doctors.id " \
+              f"    LEFT OUTER JOIN specialty on specialty.id = doctors.specialty_id " \
+              f"WHERE {' AND '.join(conditions)} "
+        sql += f"ORDER BY {order_by} "
+        if desc:
+            sql += "DESC "
+        sql += f"LIMIT {limit}"
+        return sql
 
     @staticmethod
     def specialties():

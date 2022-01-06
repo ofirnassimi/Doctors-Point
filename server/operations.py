@@ -6,8 +6,8 @@ class Operations:
     __con = Connection()
     __sql = SqlFactory()
 
-    def filter_doctors(self):
-        return self.__con.query_multi(self.__sql.doctors(None, None, None, None, None, None, None))
+    def filter_doctors(self, **kwargs):
+        return self.__con.query_multi(self.__sql.doctors(**kwargs))
 
     def sign_up(self, first_name, last_name, email, password):
         return self.__con.exec(self.__sql.insert_user(first_name, last_name, email, password))
@@ -16,6 +16,7 @@ class Operations:
         user = self.__con.query_single(self.__sql.select_user(email, password))
         if user:
             self.__con.exec(self.__sql.update_user(user[0]))
+        return user
 
     def sign_down(self, user_id):
         return self.__con.exec(self.__sql.delete_user(user_id))

@@ -7,7 +7,7 @@ class Connection:
     def __init__(self, auto: bool = True):
         self.__con = connector.connect(**CONNECTION_DETAILS)
         self.__con.autocommit = auto
-        self.__cursor = self.__con.cursor()
+        self.__cursor = self.__con.cursor(buffered=True)
 
     def __del__(self):
         self.__con.close()

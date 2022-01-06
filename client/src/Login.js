@@ -1,6 +1,5 @@
 import React from "react";
 import Axios from "axios";
-import App from "./App";
 
 class Login extends React.Component {
   // guest = {id: 0, first_name: 'dear', last_name: 'guest'};
@@ -20,7 +19,7 @@ class Login extends React.Component {
     this.toGuestMode = this.toGuestMode.bind(this)
     this.toLoginMode = this.toLoginMode.bind(this)
     this.toSignupMode = this.toSignupMode.bind(this)
-          this.todeleteUserMode = this.todeleteUserMode.bind(this)
+    this.todeleteUserMode = this.todeleteUserMode.bind(this)
 
     this.loginMode = this.loginMode.bind(this)
     this.guestMode = this.guestMode.bind(this)
@@ -28,21 +27,32 @@ class Login extends React.Component {
     this.handleChange = this.handleChange.bind(this)
   }
 
-  signIn(username, password, delUser=false) {
-    Axios.get('http://localhost:5000/login/', {params: {user_name: username, password: password}}).then(
-      (res) => {
-        console.log(res.data)
-        // if (res.data.length > 0) this.props.setUser(res.data) TODO: verify known user
-          if(delUser){
-              Axios.delete('http://localhost:5000/login/', {params: {user_name: username}})
-          }
-      }
-    )
+  handleLoginResponse(res) {
+    if (res.status === 200) {
+      console.log(res.data);
+      this.props.setUser(res.data)
+    } else {
+      this.setState({msg: 'login failed'})
+    }
   }
 
+  signIn(username, password, delUser=false) {
+    const params = {user_name: username, password: password}
+    Axios.get('http://localhost:5000/login/', {params: params}).then(
+      (res) => {this.handleLoginResponse(res)}
+    )
+  }
+        // // if (res.data.length > 0) this.props.setUser(res.data) TODO: verify known user
+        //   if(delUser){
+        //       Axios.delete('http://localhost:5000/login/', {params: {user_name: username}})
+        //   }
+
   signUp(first_name, last_name, username, password) {
-    Axios.post('http://localhost:5000/login/', {user_name: username, password: password,
-            first_name: first_name, last_name: last_name})
+    const data = {user_name: username, password: password,
+                  first_name: first_name, last_name: last_name}
+    Axios.post('http://localhost:5000/login/', data).then(
+      (res) => {this.handleLoginResponse(res)}
+    )
   }
 
   signOut() {

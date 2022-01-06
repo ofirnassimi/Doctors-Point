@@ -21,56 +21,25 @@ class Display extends React.Component {
     super(props);
     this.state = {
       display: <Board/>,
-      currentUser: "Guest"
+      currentUser: {name: "Guest", id: 0}
     }
   }
+
+  login = <Login setUser={(user) => {
+    this.setState({currentUser: {name: user[1]+' '+user[2], id: user[0]}}); console.log('display '+this.state)
+  }}/>
 
   render() {
     return (
       <div>
         <div>
+          <p>you are connected as {this.state.currentUser.name}</p>
           <button onClick={() => {this.setState({display: <Comment/>})}}>Comment</button>
-          <button onClick={() => {this.setState({display: <Login/>})}}>Login</button>
+          <button onClick={() => {this.setState({display: this.login})}}>Login</button>
           <button onClick={() => {this.setState({display: <Board/>})}}>Board</button>
         </div>
         <br/>
         {this.state.display}
-      </div>
-    )
-  }
-}
-
-class Span extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      spanned: false
-    }
-    this.switchSpan = this.switchSpan.bind(this)
-  }
-
-  base = () => {
-    return (
-      <p>base</p>
-    )
-  }
-
-  add = () => {
-    return (
-      <p>add</p>
-    )
-  }
-
-  switchSpan = () => {
-    this.setState({spanned: !this.state.spanned})
-  }
-
-  render() {
-    return (
-      <div>
-        {this.base()}
-        <button onClick={this.switchSpan}>{this.state.spanned ? '-' : '+'}</button>
-        {this.state.spanned ? this.add() : <div/>}
       </div>
     )
   }
@@ -208,63 +177,3 @@ class Select extends React.Component {
     )
   }
 }
-
-
-// class StateSelect extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       options: [],
-//     };
-//     this.getOptions = this.getOptions.bind(this);
-//     this.getOptions();
-//   }
-//
-//   getOptions() {
-//     Axios.get('http://localhost:5000/states/').then(
-//       (res) => {
-//         this.setState({options: res.data})
-//       }
-//     )
-//   }
-//
-//   render() {
-//     return (
-//       <div>
-//         <select onChange={(e) => this.props.setSelect(e.target.value)}>
-//           {this.state.options.map((option) => <option>{option}</option>)}
-//         </select>
-//       </div>
-//     )
-//   }
-// }
-
-// class Switch extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       display: <StateSelect/>,
-//     }
-//     this.searchMode = this.searchMode.bind(this)
-//     this.selectMode = this.selectMode.bind(this)
-//   }
-//
-//   searchMode() {
-//     this.setState({display: <Search/>})
-//   }
-//
-//   selectMode() {
-//     this.setState({display: <StateSelect/>})
-//   }
-//
-//   render() {
-//     return (
-//       <div>
-//         <button onClick={this.searchMode}>search</button>
-//         <button onClick={this.selectMode}>select</button>
-//         <br/>
-//         {this.state.display}
-//       </div>
-//     )
-//   }
-// }
