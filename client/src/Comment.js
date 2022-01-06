@@ -7,7 +7,8 @@ export default class Comment extends React.Component {
         this.state = {
             comments: [],
             docId: 0,
-            rate: 0
+            rate: 0,
+            mode: "wellcome"
         }
 
         this.handleChange = this.handleChange.bind(this)
@@ -36,14 +37,15 @@ export default class Comment extends React.Component {
     render() {
         return(
             <div>
-              <label>docID</label>
+                <p>Help us improve <br/>by adding a feedback about your Doctor</p>
+              <label>Doctor's ID</label>
               <input
                 type="text"
                 name="docId"
                 placeholder="Enter Doctors ID"
                 // value={ this.state.docId }
                 onChange={ this.handleChange }
-              />
+              /><br/>
                 <label>Feedback</label>
               <input
                 type="text"
@@ -51,7 +53,7 @@ export default class Comment extends React.Component {
                 placeholder="Enter Feedback"
                 // value={ this.state.docId }
                 onChange={ this.handleChange }
-              />
+              /><br/><label>Rate (1-lowest, 5-highest)</label>
                 <select onChange={(event)=>{this.setState({rate: event.target.value})}}>
                     <option>1</option>
                     <option>2</option>
@@ -59,6 +61,7 @@ export default class Comment extends React.Component {
                     <option>4</option>
                     <option>5</option>
                 </select>
+                <br/>
                 <button onClick={()=>this.addComment(
                     this.state.docId,
                     this.state.comment,

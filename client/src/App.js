@@ -43,8 +43,8 @@ class Display extends React.Component {
     return (
       <div>
         <div>
-          <p>Connected as {this.state.currentUser.name}</p>
-          <button onClick={() => {this.setState({display: <Comment/>})}}>Comment</button>
+          <p>Connected as {this.state.currentUser}</p>
+          <button onClick={() => {this.setState({display: <Comment/>})}}>Comments</button>
           <button onClick={() => {this.setState({display: <Board/>})}}>Board</button>
             {this.state.logged ? this.logout : this.login}
         </div>
@@ -67,17 +67,22 @@ class Board extends React.Component {
 
   getDoctors = (filters) => {
     Axios.get('http://localhost:5000/search/', {params: filters}).then(
-      (response) => {
-        const data = response.data;
-        this.setState({data: data});
+      (res) => {
+        this.setState({data: res.data});
       }
     )
+  }
+
+  getTop10 = () => {
+    Axios.get('http://localhost:5000/top10/').then((res) => {
+        this.setState({data: res.data})
+      })
   }
 
   render() {
     return (
       <div>
-        <Search getDoctors={this.getDoctors}/>
+        <Search getDoctors={this.getDoctors} getTop10={this.getTop10}/>
         <table>
           {this.state.data.map((doctor) => <tr>{doctor.map((item) => <td>{item}</td>)}</tr>)}
         </table>
@@ -127,12 +132,6 @@ class Search extends React.Component {
     this.props.getDoctors(filters)
   }
 
-  getTop10 = () => {
-    Axios.get('http://localhost:5000/top10/').then((res) => {
-        this.setState({result: res.data})
-      })
-  }
-
   render() {
     return (
       <div>
@@ -152,7 +151,7 @@ class Search extends React.Component {
           suffix='specialty/'
         />
         <button onClick={() => {this.invokeSearch()}}>search</button>
-        <button onClick={() => this.getTop10()}>TOP 10</button><br/>
+        <button onClick={() => {this.props.getTop10()}}>TOP 10</button><br/>
         {this.state.result}
       </div>
     )
