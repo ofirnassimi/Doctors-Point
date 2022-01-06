@@ -7,8 +7,7 @@ export default class Comment extends React.Component {
         this.state = {
             comments: [],
             docId: 0,
-            rate: 0,
-            mode: "wellcome"
+            rate: 0
         }
 
         this.handleChange = this.handleChange.bind(this)
@@ -66,6 +65,11 @@ export default class Comment extends React.Component {
                     this.state.docId,
                     this.state.comment,
                     this.state.rate)}>Submit Comment</button>
+                <br/>
+                <br/>
+                <br/>
+                <label>Read feedbacks on specific Dr. by filling Dr's ID above</label><br/>
+
                 <button onClick={()=>this.getComment(this.state.docId)}>Get Comment by ID</button>
 
                 <table>
