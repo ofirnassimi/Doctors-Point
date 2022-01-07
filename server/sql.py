@@ -190,7 +190,7 @@ class SqlFactory:
         if order_by == 'seniority':
             conditions.append("doctors.graduation_year IS NOT NULL")
 
-        sql = f"SELECT doctors.first_name as first_name, doctors.middle_name as middle_name, " \
+        sql = f"SELECT doctors.id, doctors.first_name as first_name, doctors.middle_name as middle_name, " \
               f"       doctors.last_name as last_name, doctors.gender as gender, specialty.name as specialty, " \
               f"       YEAR(NOW())-doctors.graduation_year as seniority, clinics.address as address, " \
               f"       clinics.phone_number as phone, city.name as city, states.name as state " \

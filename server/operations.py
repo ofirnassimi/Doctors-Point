@@ -25,7 +25,7 @@ class Operations:
         user = self.__con.query_single(self.__sql.select_user(email, password))
         if user:
             self.__con.exec(self.__sql.update_user(user[0]))
-        return f"{user[1]} {user[2]}"
+        return f"{user[1]} {user[2]}" if user else "Guest"
 
     def sign_down(self, user_name, password):
         return self.__con.exec(self.__sql.delete_user(user_name, password))

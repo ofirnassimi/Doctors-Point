@@ -10,7 +10,6 @@ op = Operations()
 
 
 def response(json_obj):
-	print(json_obj)
 	res = jsonify(json_obj)
 	res.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
 	return res

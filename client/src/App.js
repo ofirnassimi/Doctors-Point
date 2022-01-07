@@ -103,42 +103,42 @@ class Search extends React.Component {
       city: null,
       specialty: null,
       result: null,
-      states: [],
-      cities: [],
-      specialties: []
+//      states: [],
+//      cities: [],
+//      specialties: []
     }
 
     this.handleChange = this.handleChange.bind(this)
     this.invokeSearch = this.invokeSearch.bind(this)
-    this.getStates = this.getStates.bind(this);
-    this.getSpecialties();
-    this.getCities();
-    this.getStates();
+//    this.getStates = this.getStates.bind(this);
+//    this.getSpecialties();
+//    this.getCities();
+//    this.getStates();
   }
 
-  getCities() {
-    Axios.get('http://localhost:5000/city/').then(
-      (res) => {
-        this.setState({cities: res.data})
-      }
-    )
-  }
-
-  getSpecialties() {
-    Axios.get('http://localhost:5000/specialty/').then(
-      (res) => {
-        this.setState({specialties: res.data})
-      }
-    )
-  }
-
-  getStates() {
-    Axios.get('http://localhost:5000/states/').then(
-      (res) => {
-        this.setState({states: res.data})
-      }
-    )
-  }
+//  getCities() {
+//    Axios.get('http://localhost:5000/city/').then(
+//      (res) => {
+//        this.setState({cities: res.data})
+//      }
+//    )
+//  }
+//
+//  getSpecialties() {
+//    Axios.get('http://localhost:5000/specialty/').then(
+//      (res) => {
+//        this.setState({specialties: res.data})
+//      }
+//    )
+//  }
+//
+//  getStates() {
+//    Axios.get('http://localhost:5000/states/').then(
+//      (res) => {
+//        this.setState({states: res.data})
+//      }
+//    )
+//  }
 
   handleChange({ target }) {
     this.setState({
@@ -206,31 +206,31 @@ class Search extends React.Component {
   }
 }
 
-class Select extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      options: [],
-    };
-    this.getOptions = this.getOptions.bind(this);
-    // this.getOptions();
-  }
-
-  getOptions() {
-    Axios.get('http://localhost:5000/'+this.props.suffix).then(
-      (res) => {
-        this.setState({options: res.data})
-      }
-    )
-  }
-
-  render() {
-    return (
-      <div>
-        <select onChange={(e) => this.props.setSelect(e.target.value)}>
-          {this.state.options.map((option) => <option>{option}</option>)}
-        </select>
-      </div>
-    )
-  }
-}
+//class Select extends React.Component {
+//  constructor(props) {
+//    super(props);
+//    this.state = {
+//      options: [],
+//    };
+//    this.getOptions = this.getOptions.bind(this);
+//    // this.getOptions();
+//  }
+//
+//  getOptions() {
+//    Axios.get('http://localhost:5000/'+this.props.suffix).then(
+//      (res) => {
+//        this.setState({options: res.data})
+//      }
+//    )
+//  }
+//
+//  render() {
+//    return (
+//      <div>
+//        <select onChange={(e) => this.props.setSelect(e.target.value)}>
+//          {this.state.options.map((option) => <option>{option}</option>)}
+//        </select>
+//      </div>
+//    )
+//  }
+//}
